@@ -3,12 +3,12 @@ package model.entities;
 public class Product {
     private String name;
     private Double price;
-    private Integer amount;
+    private Integer quantity;
     
-    public Product(String name, Double price, Integer amount) {
+    public Product(String name, Double price, Integer quantity) {
         this.name = name;
         this.price = price;
-        this.amount = amount;
+        this.quantity = quantity;
     }
 
     public String getName() {
@@ -27,21 +27,21 @@ public class Product {
         this.price = price;
     }
 
-    public Integer getAmount() {
-        return amount;
+    public Integer getquantity() {
+        return quantity;
     }
 
-    public void setAmount(Integer amount) {
-        this.amount = amount;
+    public void setquantity(Integer quantity) {
+        this.quantity = quantity;
     }
 
     public Double totalPrice(){
-        return price * amount;
+        return price * quantity;
     }
 
     @Override
     public String toString() {
-        return "Product [name=" + name + ", price=" + price + ", amount=" + amount + "]";
+        return "Product [name=" + name + ", price=" + price + ", quantity=" + quantity + "]";
     }
 
     

@@ -6,47 +6,63 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
+import java.util.Scanner;
 
 import model.entities.Product;
 
 public class App {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws ParseException {
         Locale.setDefault(Locale.US);
+        Scanner sc = new Scanner(System.in);
+
         List<Product> products = new ArrayList<>();
 
-        String order = ("src/Order.csv");
-        boolean sucess = new File ("src/out").mkdir();
-        String summary = "src/out/Summary.csv";
+        System.out.println("Enter file path: ");
+        String sourceFilestr = sc.nextLine();
+
+        File sourceFile = new File(sourceFilestr);
+        String sourceFolderStr = sourceFile.getParent();
+
+        boolean sucess = new File (sourceFolderStr + "/out").mkdir();
+        String targetFileStr = (sourceFolderStr + "/out/summary.csv");
         
-        try (BufferedReader br = new BufferedReader(new FileReader(order))) {
-            BufferedWriter bw = new BufferedWriter(new FileWriter(summary));
-            String line = br.readLine();
+        try (BufferedReader br = new BufferedReader(new FileReader(sourceFilestr))) {
             
-            while (line != null) {
-                String[] lines = line.split(",");
-                String name = lines[0];
-                double price = Double.valueOf(lines[1]);
-                int amount = Integer.valueOf(lines[2]);
-                products.add(new Product(name, price, amount)); 
-                line = br.readLine();
+            String itemCSV = br.readLine();
+            while (itemCSV != null) {
+                String[] fildes = itemCSV.split(",");
+                String name = fildes[0];
+                double price = Double.parseDouble(fildes[1]);
+                int quantity = Integer.parseInt(fildes[2]);
+                products.add(new Product(name, price, quantity)); 
+                itemCSV = br.readLine();
             }
- 
-            for ( int i = 0; i < 4; i++){
-                bw.write(products.get(i).getName());
-                bw.write(",");
-                bw.write(Double.toString(products.get(i).totalPrice()));
+
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(targetFileStr))) {
+             
+                for (Product item : products){
+                bw.write(item.getName() + ", " + String.format("%.2f",item.totalPrice()));
                 bw.newLine();
+            } 
+            
+            bw.close();
+            System.out.println(targetFileStr + " CREATED");
+            
+            }catch (IOException e) {
+                System.out.println("Error writing file" + e.getMessage());
             }
 
-            bw.close();
             br.close();
-
-        } catch (IOException e) {
-            System.out.println("ERROR " + e.getMessage());
+        
+            } catch (IOException e) {
+            System.out.println("Error writing file" + e.getMessage());
         }
     }
 }
+
+
+
